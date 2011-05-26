@@ -1,0 +1,71 @@
+<html>
+  <head>
+    <title>Gandalf Dashboard</title>
+    <link rel="icon" type="image/png" 
+          href="chrome://global/skin/icons/information-16.png"/>
+    <link rel="chrome://finderfox/content/css/finderfox.css" 
+          type="text/css"/>
+    <script type="application/javascript;version=1.7" 
+            src="about.js"></script>
+    <script type="application/javascript;version=1.7"
+            src="chrome://finderfox/content/js/searcher.js"></script>
+    <script type="application/javascript;version=1.7"
+            src="chrome://finderfox/content/js/scout.js"></script>
+    <script type="application/javascript;version=1.7"
+            src="chrome://finderfox/content/js/about.js"></script>
+    <script type="application/javascript;version=1.7"
+            src="chrome://finderfox/content/js/library/jquery.js"></script>
+    <script>
+      Components.utils.reportError("OMGWTFBBQ");
+    </script>
+  </head>
+
+  <body>
+    <h2>UI Guide</h2>
+    <p>Sorry for the awful UI. 
+    <ol>
+    <li>Cmd + Y is a shortcut to bookmark. It tries adding tags to whatever you bookmark automatically. Sometimes, the tags are awful because people abuse markup.</li>
+    <li>The "Sorted" section lets you look at stuff you've visited sorted by one of the clickable criteria</li>
+    <li>"Sorted Unbookmarked" is the same but reduces to only unbookmarked links</li>
+    <li>"like" is a hack, its intended up capture a general family of like button clicks, it can somtimes capture text like "like"</li>
+    </ol>
+
+    </p>
+    
+    <h2>Sorted</h2>
+    <ul>
+    <li><a href="sort/clicks">Clicks</a></li>
+    <li><a href="sort/scrolls">Scroll</a></li>
+    <li><a href="sort/moves">Move</a></li>
+    <li><a href="sort/selects">Selects</a></li>
+    <li><a href="sort/dateset">Dates</a></li>
+    <li><a href="sort/likes">Likes</a></li>
+    </ul>
+
+    <h2>Sorted Unbookmarked</h2>
+    <ul>
+      <li><a href="sort/clicks/ub">Clicks</a></li>
+      <li><a href="sort/scrolls/ub">Scroll</a></li>
+      <li><a href="sort/moves/ub">Move</a></li>
+      <li><a href="sort/selects/ub">Selects</a></li>
+      <li><a href="sort/dateset/ub">Dates</a></li>
+      <li><a href="sort/likes/ub">Likes</a></li>
+    </ul>
+
+    <h2>Tags</h2>
+    <div id="tags">
+
+    </div>
+    
+    <h2>PID Lookup</h2>
+    <form id="pid-lookup" action="#">
+    PID Lookup: <input type="text" id="place-id-lookup"></input>
+    <input type="submit" id="place-id-button"></input>
+    </form>
+    <h2>Results</h2>
+    <div id="results">
+
+    </div>
+  </body>
+
+</html>

@@ -3,9 +3,9 @@
        xmlns:r="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <r:Description about="urn:mozilla:install-manifest">
     <creator>Abhinav Sharma</creator>
-    <description>Behavior tracking for Firefox</description>
-    <homepageURL>http://koala.abhinavsharma.me</homepageURL>
-    <id>koala@test.mozillalabs.com</id>
+    <description>Behavior tracking for Firefox.</description>
+    <homepageURL>http://gandalf.abhinavsharma.me/</homepageURL>
+    <id>koala@abhinavsharma.me</id>
     <name>Koala</name>
     <version>0.1</version>
 
