@@ -1,2 +1,2 @@
-zip -r ~/Desktop/Gandalf.xpi . -x@exclude.lst
+zip -r ~/Desktop/Koala.xpi . -x@exclude.lst
 
