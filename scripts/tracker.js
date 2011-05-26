@@ -20,7 +20,7 @@ var GandalfTracker = function(window){
   window.addEventListener("mouseup", function(e) { me.onMouseUp(e); }, false);
   window.addEventListener("scroll", function(e) {me.onScroll(e);}, false);
   window.addEventListener("mousemove", function(e) {me.onMouseMove(e);}, false);
-  window.setInterval(function(){
+  me.trackerTime = window.setInterval(function(){
     me.flushCounters(me.mouseMoveCounter, me.scrollCounter);
     me.mouseMoveCounter = {};
     me.scrollCounter = {};
@@ -95,7 +95,8 @@ GandalfTracker.prototype.onMouseUp = function(e) {
 };
 
 GandalfTracker.prototype.kill = function(window) {
-  Cu.reportError("kill");
+  Cu.reportError("kill, stopping timer");
+  clearInterval(me.trackerTime);
 }
 
 GandalfTracker.prototype.onScroll = function(e) {
@@ -129,7 +130,8 @@ GandalfTracker.prototype.queryAsync = function (query, names) {
 };
 
 GandalfTracker.prototype.flushCounters = function(mouseCounter, scrollCounter) {
-  var me = this;
+  let me = this;
+  Cu.reportError("flushing counter");
   // Cu.reportError("flush counters" + JSON.stringify(mouseCounter));
   let time = new Date().getTime();
   if (!mouseCounter) {
