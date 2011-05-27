@@ -3,7 +3,7 @@ KoalaTracker = function(win) {
   let me = this;
   me.utils = new KoalaUtils();
   
-  Cu.reportError("creating tracker db");
+  //Cu.reportError("creating tracker db");
   try {
     me.createTrackerDB();
   } catch (ex) {
@@ -23,13 +23,13 @@ KoalaTracker = function(win) {
 
   me.activeBuffer = {};
   
-  Cu.reportError("adding koala listeners");
+  //Cu.reportError("adding koala listeners");
   win.addEventListener("click", function(e) {me.onClick(e); me.onActivity(e);}, false);
   win.addEventListener("scroll", function(e) {me.onActivity(e)}, false);
   win.addEventListener("mousemove", function(e) {me.onActivity(e)}, false);
 
   // set flusher
-  Cu.reportError("settng flusher");
+  //Cu.reportError("settng flusher");
   me.trackerTime = win.setInterval(function() {
     me.flushActiveBuffer();
     me.activeBuffer = {};
@@ -53,7 +53,7 @@ KoalaTracker.prototype.onClick = function(e) {
     return;
   }
   let placeId = me.utils.getPlaceIdFromURL(url);
-  Cu.reportError("click!");
+  //Cu.reportError("click!");
   let currentTimeBlock = me.utils.getCurrentTime('h');
   let existingData = me.utils.getData(['id', 'count'], {
     'time': currentTimeBlock, 
@@ -94,7 +94,7 @@ KoalaTracker.prototype.onActivity = function(e) {
 KoalaTracker.prototype.flushActiveBuffer = function() {
   /* if in current time block, increment count, else add */
   let me = this;
-  Cu.reportError("flushing active buffer" + JSON.stringify(me.activeBuffer));
+  //Cu.reportError("flushing active buffer" + JSON.stringify(me.activeBuffer));
   let currentTimeBlock = me.utils.getCurrentTime('h');
   for (let url in me.activeBuffer) {
     let placeIdLst = me.utils.getData(['id'], {'url' : url}, "moz_places");

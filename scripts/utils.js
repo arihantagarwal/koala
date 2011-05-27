@@ -56,7 +56,7 @@ KoalaUtils.prototype.updateData = function(id, data, table) {
     queryString += k + " = :" + k + "_v ";
   }
   queryString += "WHERE id = :id";
-  Cu.reportError(queryString);
+  //Cu.reportError(queryString);
   let stm = Svc.History.DBConnection.createAsyncStatement(queryString);
   stm.params["id"] = id;
   for ([k,v] in Iterator(data)) {
@@ -75,12 +75,12 @@ KoalaUtils.prototype.insertData = function(data, table) {
   queryString += ") VALUES ("
   queryString += flatData.map(function(d) {return ":" + d + "_v";}).join(',');
   queryString += ");";
-  Cu.reportError(queryString);
+  //Cu.reportError(queryString);
   let stm = Svc.History.DBConnection.createAsyncStatement(queryString);
   for ([k,v] in Iterator(data)) {
     stm.params[k + "_v"] = v;
   }
-  Cu.reportError(JSON.stringify(stm.params));
+  //Cu.reportError(JSON.stringify(stm.params));
   Utils.queryAsync(stm, []);
 };
 
