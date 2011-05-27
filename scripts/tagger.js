@@ -9,10 +9,11 @@
  * the tracker.
  */
 
-KoalaTagger = function(utils) {
+KoalaTagger = function() {
   let me = this;
   Cu.reportError("starting koala tagger");
-  me.utils = utils;
+  me.utils = new KoalaUtils();
+  me.createTaggerDB();
 }
 
 KoalaTagger.prototype.snapshot = function() {
@@ -22,9 +23,9 @@ KoalaTagger.prototype.snapshot = function() {
 KoalaTagger.prototype.createTaggerDB = function() {
   let me = this;
   Cu.reportError("crating taggee db");
-  let taggerSchema = "id INTEGER PRIMARY KEY NOT NULL AUTOINCREMENT," +
+  let taggerSchema = "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                      "place_id INTEGER," +
-                     "tag VARCHAR(25)," +
+                     "tag LONGVARCHAR," +
                      "type INTEGER, " +
                      "confidence FLOAT," +
                      "date INTEGER";

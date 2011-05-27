@@ -9,6 +9,12 @@ KoalaTracker = function(win) {
   } catch (ex) {
     Cu.reportError(ex);
   }
+
+  try {
+    let tagger = new KoalaTagger(me.utils);
+  } catch (ex) {
+    Cu.reportError(ex);
+  }
   me.ACTIONS = {
     "click"  : 1,
     "active" : 2,

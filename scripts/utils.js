@@ -103,3 +103,19 @@ KoalaUtils.prototype.getCurrentTime = function(precision) {
     "d" : time / (1000 * 60 * 60 * 24)
   }[precision]);
 };
+
+KoalaUtils.prototype.createDB = function(table, schema) {
+  let me = this;
+  let dbFile = Cc["@mozilla.org/file/directory_service;1"]
+               .getService(Ci.nsIProperties)
+               .get("ProfD", Ci.nsIFile);
+  dbFile.append("places.sqlite");
+  let storage = Cc["@mozilla.org/storage/service;1"]
+                .getService(Ci.mozIStorageService);
+  let dbConn = storage.openDatabase(dbFile);
+  
+  Cu.reportError("creating " + table);
+  try {
+    dbConn.createTable(table, schema);
+  } catch (ex) {}
+};
