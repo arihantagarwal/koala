@@ -68,7 +68,6 @@ KoalaTracker.prototype.onClick = function(e) {
 };
 
 KoalaTracker.prototype.onActivity = function(e) {
-  return;
   let me = this;
   let url = me.utils.getCurrentURL();
   if (!me.utils.isValidURL(url)) {
