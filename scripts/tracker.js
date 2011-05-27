@@ -46,7 +46,11 @@ KoalaTracker.prototype.onClick = function(e) {
   let placeId = me.utils.getPlaceIdFromURL(url);
   Cu.reportError("click!");
   let currentTimeBlock = me.utils.getCurrentTime('h');
-  let existingData = me.utils.getData(['id', 'count'], {'time': currentTimeBlock, 'place_id': placeId}, "moz_koala");
+  let existingData = me.utils.getData(['id', 'count'], {
+    'time': currentTimeBlock, 
+    'place_id': placeId,
+    'type' : 1,
+  }, "moz_koala");
   if (existingData.length == 0) {
     Cu.reportError("click does not exist in block, insert");
     // does not exist, add
@@ -89,7 +93,10 @@ KoalaTracker.prototype.flushActiveBuffer = function() {
       continue;
     }
     let placeId = placeIdLst[0]["id"];
-    let existingData = me.utils.getData(['id', 'count'], {'place_id' : placeId, 'time': currentTimeBlock}, "moz_koala");
+    let existingData = me.utils.getData(['id', 'count'], {
+      'place_id' : placeId, 
+      'time': currentTimeBlock, 
+      'type':2}, "moz_koala");
     if (existingData.length == 0) {
       // does not exist, insert
       me.utils.insertData({
