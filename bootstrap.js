@@ -1,6 +1,6 @@
 const {classes: Cc, interfaces: Ci, manager: Cm, utils: Cu} = Components;
 const global = this;
-const KOALA_SCRIPTS = ["tracker", "utils"];
+const KOALA_SCRIPTS = ["tracker", "utils", "tagger"];
 
 Cu.import("resource://gre/modules/AddonManager.jsm");
 Cu.import("resource://gre/modules/Services.jsm");

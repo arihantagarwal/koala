@@ -2,6 +2,8 @@ KoalaTracker = function(win) {
   Cu.reportError("starting koala tracker");
   let me = this;
   me.utils = new KoalaUtils();
+  
+  Cu.reportError("creating tracker db");
   try {
     me.createTrackerDB();
   } catch (ex) {
@@ -15,12 +17,13 @@ KoalaTracker = function(win) {
 
   me.activeBuffer = {};
   
-  // Cu.reportError("adding koala listeners");
+  Cu.reportError("adding koala listeners");
   win.addEventListener("click", function(e) {me.onClick(e); me.onActivity(e);}, false);
   win.addEventListener("scroll", function(e) {me.onActivity(e)}, false);
   win.addEventListener("mousemove", function(e) {me.onActivity(e)}, false);
 
   // set flusher
+  Cu.reportError("settng flusher");
   me.trackerTime = win.setInterval(function() {
     me.flushActiveBuffer();
     me.activeBuffer = {};
@@ -118,14 +121,6 @@ KoalaTracker.prototype.flushActiveBuffer = function() {
 
 KoalaTracker.prototype.createTrackerDB = function() {
   let me = this;
-  let dbFile = Cc["@mozilla.org/file/directory_service;1"]
-               .getService(Ci.nsIProperties)
-               .get("ProfD", Ci.nsIFile);
-  dbFile.append("places.sqlite");
-  let storage = Cc["@mozilla.org/storage/service;1"]
-                .getService(Ci.mozIStorageService);
-  let dbConn = storage.openDatabase(dbFile);
-  
   let trackerSchema = "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE," +
                       "url LONGVARCHAR," +
                       "place_id INTEGER," +
@@ -133,11 +128,5 @@ KoalaTracker.prototype.createTrackerDB = function() {
                       "count INTEGER DEFAULT 1," +
                       "time INTEGER," +
                       "anno_1 LONGVARCHAR";
-
-  Cu.reportError("creating moz_koala");
-  try {
-    dbConn.createTable("moz_koala", trackerSchema);
-  } catch (ex) {
-  }
-  Cu.reportError("db created or exists");
+  me.utils.createDB("moz_koala", trackerSchema);
 };
