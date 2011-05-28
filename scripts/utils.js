@@ -10,6 +10,11 @@ KoalaUtils.prototype.getCurrentWindow = function() {
   return win;
 };
 
+KoalaUtils.prototype.getCurrentDocument = function() {
+  // TODO : write this method
+  return null
+};
+
 KoalaUtils.prototype.getCurrentURL = function() {
   return this.getCurrentWindow().location.href;
 };

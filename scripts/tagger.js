@@ -17,8 +17,30 @@ KoalaTagger = function() {
 }
 
 KoalaTagger.prototype.snapshot = function() {
+  let url = me.utils.getCurrentURL();
+  let placeId = me.utils.getPlaceIdFromURL(url);
+  let tags  = me.extractTags();
+  me.storeTags(tags, placeId, url);
+};
 
+KoalaTagger.prototype.extractTags = function() {
+  // TODO: finish this method
+  let currentDocument = me.utils.getCurrentDocument();
 }
+
+KoalaTagger.prototype.storeTags = function(tags, placeId, url) {
+  let today = me.utils.getCurrentDate('d');
+  for ([tag, score] in Iterator(tags)) {
+    // TODO: check first if this placeId, date combo does not exist.
+    me.utils.insertData({
+      'place_id' : placeId,
+      'tag': tag,
+      'type': 1,
+      'confidence': score,
+      'date': today,
+    }, "moz_koala_tags");
+  }
+};
 
 KoalaTagger.prototype.createTaggerDB = function() {
   let me = this;
