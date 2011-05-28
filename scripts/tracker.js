@@ -23,10 +23,14 @@ KoalaTracker = function(win) {
 
   me.activeBuffer = {};
   
+  me.clickWrapper = function(e) {me.onClick(e)};
+  me.activityWrapper = function(e) {me.onActivity(e)};
+
   //Cu.reportError("adding koala listeners");
-  win.addEventListener("click", function(e) {me.onClick(e); me.onActivity(e);}, false);
-  win.addEventListener("scroll", function(e) {me.onActivity(e)}, false);
-  win.addEventListener("mousemove", function(e) {me.onActivity(e)}, false);
+  win.addEventListener("click", me.clickWrapper, false);
+  win.addEventListener("click", me.activityWrapper, false);
+  win.addEventListener("scroll", me.activityWrapper, false);
+  win.addEventListener("mousemove", me.activityWrapper, false);
 
   // set flusher
   //Cu.reportError("settng flusher");
@@ -39,10 +43,10 @@ KoalaTracker = function(win) {
 KoalaTracker.prototype.terminate = function(win) {
   let me = this;
   Cu.reportError("stopping koala tracker")
-  win.removeEventListener("click", me.onClick, false);
-  win.removeEventListener("click", me.onActivity, false);
-  win.removeEventListener("scroll", me.onActivity, false);
-  win.removeEventListener("mousemove", me.onActivity, false);
+  win.removeEventListener("click", me.clickWrapper, false);
+  win.removeEventListener("click", me.activityWrapper, false);
+  win.removeEventListener("scroll", me.activityWrapper, false);
+  win.removeEventListener("mousemove", me.activityWrapper, false);
   clearInterval(me.trackerTime);
 }
 
