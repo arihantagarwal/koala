@@ -7,6 +7,36 @@ Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://services-sync/util.js");
 
+const EdContract = "@mozilla.org/network/protocol/about;1?what=ed";
+const EdDescription = "About Ed";
+const EdUUID = Components.ID("6b20c507-9257-40c3-aa7c-ac7d63cc6719");
+
+// Create a factory that gives the about:ed service
+let EdFactory = {
+  createInstance: function(outer, iid) {
+    if (outer != null)
+      throw Cr.NS_ERROR_NO_AGGREGATION;
+    return AboutEd.QueryInterface(iid);
+  }
+};
+
+// Implement about:ed
+let AboutEd = {
+  QueryInterface: XPCOMUtils.generateQI([Ci.nsIAboutModule]),
+
+  getURIFlags: function(aURI) {
+    return 0;
+  },
+
+  newChannel: function(aURI) {
+    let fileURI = global.aboutURI;
+    Cu.reportError(fileURI);
+    return Services.io.newChannelFromURI(fileURI);
+  }
+};
+
+
+
 function watchWindows(callback) {
   // Wrap the callback in a function that ignores failures
   function watcher(window) {
@@ -121,6 +151,7 @@ function listenBrowser(window) {
 
 
 function startup(data, reason) {
+  global.APP_ID = data.id;
   Cu.reportError("Koala startup");
   AddonManager.getAddonByID(data.id, function(addon) {
     // Load various javascript includes for helper functions
@@ -128,8 +159,11 @@ function startup(data, reason) {
       let fileURI = addon.getResourceURI("scripts/" + fileName + ".js");
       Services.scriptloader.loadSubScript(fileURI.spec, global);
     });
+    global.aboutURI = addon.getResourceURI("content/about.html");
   watchWindows(listenBrowser);
   });
+  Cm.QueryInterface(Ci.nsIComponentRegistrar).
+    registerFactory(EdUUID, EdDescription, EdContract, EdFactory);
 }
 
 function shutdown(data, reason) {
@@ -137,6 +171,9 @@ function shutdown(data, reason) {
   if (reason != APP_SHUTDOWN) {
     unload();
   }
+  Cm.QueryInterface(Ci.nsIComponentRegistrar).
+    unregisterFactory(EdUUID, EdFactory);
+
 }
 
 function install(data, reason) {
