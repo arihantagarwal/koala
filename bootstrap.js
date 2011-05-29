@@ -66,6 +66,13 @@ function addMenuItem(win) {
 
 function dashboard() {
   Cu.reportError("load dashboard");
+  let gBrowser = Services.wm.getMostRecentWindow("navigator:browser").gBrowser;
+  let tab = gBrowser.selectedTab = gBrowser.addTab("chrome://browser/content/aboutHome.xhtml");
+  tab.linkedBrowser.addEventListener("load", function() {
+    tab.linkedBrowser.removeEventListener("load", arguments.callee, true);
+    let doc = tab.linkedBrowser.contentDocument;
+    doc.body.innerHTML = 'Hello World';
+  }, true);
 }
 
 function watchWindows(callback) {
