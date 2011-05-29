@@ -10,6 +10,11 @@ Cu.import("resource://services-sync/util.js");
 const EdContract = "@mozilla.org/network/protocol/about;1?what=ed";
 const EdDescription = "About Ed";
 const EdUUID = Components.ID("6b20c507-9257-40c3-aa7c-ac7d63cc6719");
+const NS_XUL = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+const keysetID = "restartless-restart-keyset";
+const keyID = "RR:Restart";
+const fileMenuitemID = "menu_FileRestartItem";
+var XUL_APP = {name: Services.appinfo.name};
 
 // Create a factory that gives the about:ed service
 let EdFactory = {
@@ -35,7 +40,33 @@ let AboutEd = {
   }
 };
 
+function addMenuItem(win) {
+  var $ = function(id) win.document.getElementById(id);
 
+  function removeMI() {
+    var menuitem = $(fileMenuitemID);
+    menuitem && menuitem.parentNode.removeChild(menuitem);
+  }
+  removeMI();
+
+  // add the new menuitem to File menu
+  let (restartMI = win.document.createElementNS(NS_XUL, "menuitem")) {
+    restartMI.setAttribute("id", fileMenuitemID);
+    restartMI.setAttribute("class", "menuitem-iconic");
+    restartMI.setAttribute("label", "Koala Dashboard");
+    restartMI.setAttribute("accesskey", "K");
+    restartMI.setAttribute("key", keyID);
+    restartMI.addEventListener("command", dashboard, true);
+
+    $("menu_FilePopup").insertBefore(restartMI, $("menu_FileQuitItem"));
+  }
+
+  unload(removeMI, win);
+}
+
+function dashboard() {
+  Cu.reportError("load dashboard");
+}
 
 function watchWindows(callback) {
   // Wrap the callback in a function that ignores failures
@@ -142,6 +173,11 @@ function unload(callback, container) {
 }
 
 function listenBrowser(window) {
+  try {addMenuItem(window);
+  } catch (ex) {
+    Cu.reportError(ex);
+  }
+  
   let tracker = new KoalaTracker(window);
   unload(function() {
     tracker.terminate(window);
