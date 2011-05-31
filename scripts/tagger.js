@@ -13,7 +13,6 @@ KoalaTagger = function() {
   let me = this;
   Cu.reportError("starting koala tagger");
   me.utils = new KoalaUtils();
-  me.createTaggerDB();
 }
 
 KoalaTagger.prototype.snapshot = function() {
@@ -42,14 +41,3 @@ KoalaTagger.prototype.storeTags = function(tags, placeId, url) {
   }
 };
 
-KoalaTagger.prototype.createTaggerDB = function() {
-  let me = this;
-  Cu.reportError("crating taggee db");
-  let taggerSchema = "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                     "place_id INTEGER," +
-                     "tag LONGVARCHAR," +
-                     "type INTEGER, " +
-                     "confidence FLOAT," +
-                     "date INTEGER";
-  me.utils.createDB("moz_koala_tags", taggerSchema);
-};

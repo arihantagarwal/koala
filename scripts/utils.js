@@ -125,7 +125,5 @@ KoalaUtils.prototype.createDB = function(table, schema) {
   let dbConn = storage.openDatabase(dbFile);
   
   Cu.reportError("creating " + table);
-  try {
-    dbConn.createTable(table, schema);
-  } catch (ex) {}
+  dbConn.createTable(table, schema);
 };

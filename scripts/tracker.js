@@ -4,11 +4,6 @@ KoalaTracker = function(win) {
   me.utils = new KoalaUtils();
   
   //Cu.reportError("creating tracker db");
-  try {
-    me.createTrackerDB();
-  } catch (ex) {
-    Cu.reportError(ex);
-  }
 
   try {
     let tagger = new KoalaTagger(me.utils);
@@ -129,14 +124,3 @@ KoalaTracker.prototype.flushActiveBuffer = function() {
   }
 };
 
-KoalaTracker.prototype.createTrackerDB = function() {
-  let me = this;
-  let trackerSchema = "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE," +
-                      "url LONGVARCHAR," +
-                      "place_id INTEGER," +
-                      "type INTEGER," +
-                      "count INTEGER DEFAULT 1," +
-                      "time INTEGER," +
-                      "anno_1 LONGVARCHAR";
-  me.utils.createDB("moz_koala", trackerSchema);
-};

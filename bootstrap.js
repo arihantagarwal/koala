@@ -1,6 +1,6 @@
 const {classes: Cc, interfaces: Ci, manager: Cm, utils: Cu} = Components;
 const global = this;
-const KOALA_SCRIPTS = ["tracker", "utils", "tagger", "dashboard", "grandcentral"];
+const KOALA_SCRIPTS = ["tracker", "utils", "tagger", "dashboard", "grandcentral", "migrator"];
 
 Cu.import("resource://gre/modules/AddonManager.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
@@ -183,7 +183,7 @@ function startup(data, reason) {
     });
     global.aboutURI = addon.getResourceURI("content/about.html");
   watchWindows(listenBrowser);
-  watchWindows(main, XUL_APP.winType);
+  //watchWindows(main, XUL_APP.winType);
   });
 }
 
@@ -211,8 +211,49 @@ function shutdown(data, reason) {
 }
 
 function install(data, reason) {
+  Cu.reportError("installing koala");
 
-}
+  Cu.reportError("Koala startup");
+  AddonManager.getAddonByID(data.id, function(addon) {
+    KOALA_SCRIPTS.forEach(function(fileName) {
+      let fileURI = addon.getResourceURI("scripts/" + fileName + ".js");
+      Services.scriptloader.loadSubScript(fileURI.spec, global);
+    });
+    let utils = new KoalaUtils();
+  
+  Cu.reportError("creating tracker db");
+  (function createTrackerDB(){
+    let trackerSchema = "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE," +
+                      "url LONGVARCHAR," +
+                      "place_id INTEGER," +
+                      "type INTEGER," +
+                      "count INTEGER DEFAULT 1," +
+                      "time INTEGER," +
+                      "anno_1 LONGVARCHAR";
+  try {
+    utils.createDB("moz_koala", trackerSchema);
+    try {
+    let migrate = new KoalaMigrator();
+    } catch (x) {Cu.reportError(x);}
+  } catch (ex) {Cu.reportError(ex)}
+
+  })();
+
+  (function createTaggerDB() {
+    Cu.reportError("crating tagger db");
+    let taggerSchema = "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                       "place_id INTEGER," +
+                       "tag LONGVARCHAR," +
+                       "type INTEGER, " +
+                       "confidence FLOAT," +
+                       "date INTEGER";
+    try {
+      utils.createDB("moz_koala_tags", taggerSchema);
+    } catch (ex) {Cu.reportError(ex)}
+  })();
+
+  });
+};
 
 function uninstall(data, reason) {
 
