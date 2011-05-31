@@ -1,5 +1,6 @@
-KoalaDashboard = function() {
+KoalaDashboard = function(doc) {
   let me = this;
+  me.doc = doc;
 };
 
 KoalaDashboard.prototype.setupDashboard = function() {

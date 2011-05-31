@@ -1,6 +1,6 @@
 const {classes: Cc, interfaces: Ci, manager: Cm, utils: Cu} = Components;
 const global = this;
-const KOALA_SCRIPTS = ["tracker", "utils", "tagger"];
+const KOALA_SCRIPTS = ["tracker", "utils", "tagger", "dashboard"];
 
 Cu.import("resource://gre/modules/AddonManager.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
@@ -75,6 +75,7 @@ function dashboard() {
     tab.linkedBrowser.addEventListener("load", function() {
       tab.linkedBrowser.removeEventListener("load", arguments.callee, true);
       let doc = tab.linkedBrowser.contentDocument;
+      let dashboard = new KoalaDashboard(doc);
     }, true);
   });
 }
