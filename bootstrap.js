@@ -16,29 +16,6 @@ const keyID = "RR:Restart";
 const fileMenuitemID = "menu_FileRestartItem";
 var XUL_APP = {name: Services.appinfo.name};
 
-// Create a factory that gives the about:ed service
-let EdFactory = {
-  createInstance: function(outer, iid) {
-    if (outer != null)
-      throw Cr.NS_ERROR_NO_AGGREGATION;
-    return AboutEd.QueryInterface(iid);
-  }
-};
-
-// Implement about:ed
-let AboutEd = {
-  QueryInterface: XPCOMUtils.generateQI([Ci.nsIAboutModule]),
-
-  getURIFlags: function(aURI) {
-    return 0;
-  },
-
-  newChannel: function(aURI) {
-    let fileURI = global.aboutURI;
-    Cu.reportError(fileURI);
-    return Services.io.newChannelFromURI(fileURI);
-  }
-};
 
 function addMenuItem(win) {
   var $ = function(id) win.document.getElementById(id);
@@ -210,8 +187,6 @@ function startup(data, reason) {
     global.aboutURI = addon.getResourceURI("content/about.html");
   watchWindows(listenBrowser);
   });
-  Cm.QueryInterface(Ci.nsIComponentRegistrar).
-    registerFactory(EdUUID, EdDescription, EdContract, EdFactory);
 }
 
 function shutdown(data, reason) {
@@ -219,9 +194,6 @@ function shutdown(data, reason) {
   if (reason != APP_SHUTDOWN) {
     unload();
   }
-  Cm.QueryInterface(Ci.nsIComponentRegistrar).
-    unregisterFactory(EdUUID, EdFactory);
-
 }
 
 function install(data, reason) {
