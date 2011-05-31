@@ -1,6 +1,7 @@
 KoalaUtils = function() {
   let me = this;
   Cu.reportError("koala utils init");
+  Cu.import("resource://services-sync/util.js");
 };
 
 KoalaUtils.prototype.getCurrentWindow = function() {
@@ -17,6 +18,10 @@ KoalaUtils.prototype.getCurrentDocument = function() {
 
 KoalaUtils.prototype.getCurrentURL = function() {
   return this.getCurrentWindow().location.href;
+};
+
+KoalaUtils.prototype.isBookmarked = function(placeId) {
+  return (me.getData(["id"],{"fk":placeId},"moz_bookmarks").length > 0);
 };
 
 KoalaUtils.prototype.getPlaceIdFromURL = function(url) {

@@ -1,19 +1,16 @@
 const {classes: Cc, interfaces: Ci, manager: Cm, utils: Cu} = Components;
 const global = this;
-const KOALA_SCRIPTS = ["tracker", "utils", "tagger", "dashboard"];
+const KOALA_SCRIPTS = ["tracker", "utils", "tagger", "dashboard", "grandcentral"];
 
 Cu.import("resource://gre/modules/AddonManager.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://services-sync/util.js");
 
-const EdContract = "@mozilla.org/network/protocol/about;1?what=ed";
-const EdDescription = "About Ed";
-const EdUUID = Components.ID("6b20c507-9257-40c3-aa7c-ac7d63cc6719");
 const NS_XUL = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
-const keysetID = "restartless-restart-keyset";
-const keyID = "RR:Restart";
-const fileMenuitemID = "menu_FileRestartItem";
+const keysetID = "koala-keyset";
+const keyID = "K:Koala";
+const fileMenuitemID = "menu_FileKoalaItem";
 var XUL_APP = {name: Services.appinfo.name};
 
 
@@ -27,15 +24,15 @@ function addMenuItem(win) {
   removeMI();
 
   // add the new menuitem to File menu
-  let (restartMI = win.document.createElementNS(NS_XUL, "menuitem")) {
-    restartMI.setAttribute("id", fileMenuitemID);
-    restartMI.setAttribute("class", "menuitem-iconic");
-    restartMI.setAttribute("label", "Koala Dashboard");
-    restartMI.setAttribute("accesskey", "K");
-    restartMI.setAttribute("key", keyID);
-    restartMI.addEventListener("command", dashboard, true);
+  let (koalaMI = win.document.createElementNS(NS_XUL, "menuitem")) {
+    koalaMI.setAttribute("id", fileMenuitemID);
+    koalaMI.setAttribute("class", "menuitem-iconic");
+    koalaMI.setAttribute("label", "Koala Dashboard");
+    koalaMI.setAttribute("accesskey", "K");
+    koalaMI.setAttribute("key", keyID);
+    koalaMI.addEventListener("command", dashboard, true);
 
-    $("menu_FilePopup").insertBefore(restartMI, $("menu_FileQuitItem"));
+    $("menu_FilePopup").insertBefore(koalaMI, $("menu_FileQuitItem"));
   }
 
   unload(removeMI, win);
@@ -186,8 +183,25 @@ function startup(data, reason) {
     });
     global.aboutURI = addon.getResourceURI("content/about.html");
   watchWindows(listenBrowser);
+  watchWindows(main, XUL_APP.winType);
   });
 }
+
+function main(win) {
+  function $(id) doc.getElementById(id);
+  function xul(type) doc.createElementNS(NS_XUL, type);
+  let koalaKeyset = xul("keyset");
+  koalaKeyset.setAttribute("id", keysetID);
+  let (koalaKey = xul("key")) {
+    koalaKey.setAttribute("id", keyID);
+    koalaKey.setAttribute("key", "K");
+    koalaKey.setAttribute("modifiers", "accel,alt");
+    koalaKey.setAttribute("oncommand", "void(0);");
+    koalaKey.addEventListener("command", dashboard, true);
+    $(XUL_APP.baseKeyset).parentNode, appendChild(koalaKeyset).appendChild(koalaKey);
+  };
+
+};
 
 function shutdown(data, reason) {
   Cu.reportError("koala shutdown");
