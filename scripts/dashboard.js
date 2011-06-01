@@ -2,6 +2,7 @@ KoalaDashboard = function(doc) {
   let me = this;
   me.doc = doc;
   me.utils = new KoalaUtils();
+  me.sc = new SiteCentral();
   me.setupDashboard();
 };
 
@@ -31,15 +32,26 @@ KoalaDashboard.prototype.uriLookup = function(e) {
   let uri = me.utils.getData(["url"],{"id": pid},"moz_places");
   uri = uri.length > 0 ? uri[0]["url"] : null;
   let rdp = new KoalaSortedDisplayer(me.doc);
+  rdp.addRow("URL", "One");
   rdp.addRow(uri, 1);
 }
+
+KoalaDashboard.prototype.siteCentral = function(e) {
+  let me = this;
+  e.preventDefault();
+  let placeId = parseInt(me.doc.getElementById('hub-place-id').value);
+  me.populateResults(true, me.sc.getSiteHubList(placeId));
+}
+
 
 KoalaDashboard.prototype.setupDashboard = function() {
   let me = this;
   me.sortWrap = function(e) { me.sortSubmit(e) }
   me.uriLookupWrap = function(e) { me.uriLookup(e) }
+  me.siteCentralWrap = function(e) { me.siteCentral(e) }
   me.doc.getElementById('sorted-form').addEventListener("submit", me.sortWrap, false);
   me.doc.getElementById('uri-lookup-form').addEventListener("submit", me.uriLookupWrap, false);
+  me.doc.getElementById('site-hub-form').addEventListener("submit", me.siteCentralWrap, false);
 };
 
 KoalaDashboard.prototype.getSortedOccurences = function(sortBy, accum) {
@@ -96,9 +108,9 @@ KoalaDashboard.prototype.populateResults = function(sort, sorted) {
   let me = this;
   if (sort) {
     let rdp = new KoalaSortedDisplayer(me.doc);
+    rdp.addRow("Place ID", "Occurrences");
     for (let i in sorted) {
-      let occ = sorted[i][1];
-      rdp.addRow(sorted[i][0], occ);
+      rdp.addRow(sorted[i][0], sorted[i][1]);
     }
   }
 };

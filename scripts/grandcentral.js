@@ -38,8 +38,8 @@ function SiteCentral() {
   me.utils = new KoalaUtils();
 }
 
-SiteCentral.prototype.getSiteHubList = function() {
-  let placeId = me.utils.getCurrentPlace();
+SiteCentral.prototype.getSiteHubList = function(placeId) {
+  let me = this
   let revHost = me.utils.getData(["rev_host"], {"id":placeId}
     , "moz_places")[0]["rev_host"];
   return me.utils.getData(["id", "visit_count"],{"rev_host":revHost},"moz_places")
