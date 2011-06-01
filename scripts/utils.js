@@ -43,6 +43,18 @@ KoalaUtils.prototype.getPlaceIdFromURL = function(url) {
   }
 };
 
+KoalaUtils.prototype.getDataQuery = function(query, params, select) {
+  let stm = Svc.History.DBConnection.createAsyncStatement(query);
+  for (let key in params) {
+    stm.params[key] = params[key];
+  }
+  let result = [];
+  Utils.queryAsync(stm, select).forEach(function(row) {
+    result.push(row);
+  });
+  return result;
+}
+
 KoalaUtils.prototype.getData = function(fields, conditions, table) {
   let me = this;
   let queryString = "SELECT ";

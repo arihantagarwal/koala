@@ -1,9 +1,9 @@
 const {classes: Cc, interfaces: Ci, manager: Cm, utils: Cu} = Components;
 const global = this;
-const KOALA_SCRIPTS = ["tracker", "utils", "tagger", "dashboard", "grandcentral", "migrator"];
+const KOALA_SCRIPTS = ["tracker", "utils", "tagger", "dashboard", "grandcentral", "migrator", "brain", "brainiac"];
 
-const DEBUG = false;
-const reportError = DEBUG ? reportError : function(err) {}
+const DEBUG = true;
+const reportError = DEBUG ? Cu.reportError : function(err) {}
 
 Cu.import("resource://gre/modules/AddonManager.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
