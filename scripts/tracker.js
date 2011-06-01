@@ -1,5 +1,5 @@
 KoalaTracker = function(win) {
-  Cu.reportError("starting koala tracker");
+  //Cu.reportError("starting koala tracker");
   let me = this;
   me.utils = new KoalaUtils();
   
@@ -37,7 +37,7 @@ KoalaTracker = function(win) {
 
 KoalaTracker.prototype.terminate = function(win) {
   let me = this;
-  Cu.reportError("stopping koala tracker")
+  //Cu.reportError("stopping koala tracker")
   win.removeEventListener("click", me.clickWrapper, false);
   win.removeEventListener("click", me.activityWrapper, false);
   win.removeEventListener("scroll", me.activityWrapper, false);
@@ -60,7 +60,7 @@ KoalaTracker.prototype.onClick = function(e) {
     'type' : 1,
   }, "moz_koala");
   if (existingData.length == 0) {
-    Cu.reportError("click does not exist in block, insert");
+    //Cu.reportError("click does not exist in block, insert");
     // does not exist, add
     me.utils.insertData({
       'url': me.utils.getCurrentURL(),
@@ -70,7 +70,7 @@ KoalaTracker.prototype.onClick = function(e) {
       'count' : 1,
     }, "moz_koala");
   } else {
-    Cu.reportError("click exists in block, update");
+    //Cu.reportError("click exists in block, update");
     // exists, update
     let count = existingData[0]["count"] + 1;
     me.utils.updateData(existingData[0]["id"], {

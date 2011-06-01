@@ -54,7 +54,7 @@ function addMenuItem(win) {
 }
 
 function dashboard() {
-  Cu.reportError("load dashboard");
+  //Cu.reportError("load dashboard");
   let gBrowser = Services.wm.getMostRecentWindow("navigator:browser").gBrowser;
   
 
@@ -189,7 +189,7 @@ function listenBrowser(window) {
 
 function startup(data, reason) {
   global.APP_ID = data.id;
-  Cu.reportError("Koala startup");
+  //Cu.reportError("Koala startup");
   AddonManager.getAddonByID(data.id, function(addon) {
     // Load various javascript includes for helper functions
     KOALA_SCRIPTS.forEach(function(fileName) {
@@ -202,16 +202,16 @@ function startup(data, reason) {
 }
 
 function shutdown(data, reason) {
-  Cu.reportError("koala shutdown");
+  //Cu.reportError("koala shutdown");
   if (reason != APP_SHUTDOWN) {
     unload();
   }
 }
 
 function install(data, reason) {
-  Cu.reportError("installing koala");
+  //Cu.reportError("installing koala");
 
-  Cu.reportError("Koala startup");
+  //Cu.reportError("Koala startup");
   AddonManager.getAddonByID(data.id, function(addon) {
     KOALA_SCRIPTS.forEach(function(fileName) {
       let fileURI = addon.getResourceURI("scripts/" + fileName + ".js");
@@ -219,7 +219,7 @@ function install(data, reason) {
     });
     let utils = new KoalaUtils();
   
-  Cu.reportError("creating tracker db");
+  //Cu.reportError("creating tracker db");
   (function createTrackerDB(){
     let trackerSchema = "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE," +
                       "url LONGVARCHAR," +
@@ -231,10 +231,12 @@ function install(data, reason) {
   try {
     utils.createDB("moz_koala", trackerSchema);
     try {
-    let migrate = new KoalaMigrator();
-    } catch (x) {Cu.reportError(x);}
-  } catch (ex) {Cu.reportError(ex)}
-
+      let migrate = new KoalaMigrator();
+    } catch (x) {
+      Cu.reportError(x);
+    }
+  } 
+  catch (ex) {Cu.reportError(ex)}
   })();
 
   (function createTaggerDB() {
@@ -247,12 +249,14 @@ function install(data, reason) {
                        "date INTEGER";
     try {
       utils.createDB("moz_koala_tags", taggerSchema);
-    } catch (ex) {Cu.reportError(ex)}
+    } catch (ex) {
+      Cu.reportError(ex)
+    }
   })();
 
   });
 };
 
 function uninstall(data, reason) {
-
+  // TODO: database removal
 }

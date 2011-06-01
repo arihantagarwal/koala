@@ -1,6 +1,6 @@
 KoalaUtils = function() {
   let me = this;
-  Cu.reportError("koala utils init");
+  //Cu.reportError("koala utils init");
   Cu.import("resource://services-sync/util.js");
 };
 
@@ -133,6 +133,6 @@ KoalaUtils.prototype.createDB = function(table, schema) {
                 .getService(Ci.mozIStorageService);
   let dbConn = storage.openDatabase(dbFile);
   
-  Cu.reportError("creating " + table);
+  //Cu.reportError("creating " + table);
   dbConn.createTable(table, schema);
 };

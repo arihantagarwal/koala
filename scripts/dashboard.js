@@ -2,14 +2,13 @@ KoalaDashboard = function(doc) {
   let me = this;
   me.doc = doc;
   me.utils = new KoalaUtils();
-  me.gc = new GrandCentral();
   me.setupDashboard();
 };
 
 KoalaDashboard.prototype.sortSubmit = function(e) {
   let me = this;
   e.preventDefault();
-  Cu.reportError("form submit");
+  //Cu.reportError("form submit");
   let sortBy = null;
   if (me.doc.getElementById("sort-clicks").checked) {
     sortBy = 1;
@@ -26,7 +25,7 @@ KoalaDashboard.prototype.sortSubmit = function(e) {
 
 KoalaDashboard.prototype.uriLookup = function(e) {
   let me = this;
-  Cu.reportError("uri lookup");
+  //Cu.reportError("uri lookup");
   e.preventDefault();
   let pid = parseInt(me.doc.getElementById('uri-from-pid').value);
   let uri = me.utils.getData(["url"],{"id": pid},"moz_places");
@@ -69,7 +68,8 @@ KoalaDashboard.prototype.getSortedBasic = function(sortBy, filterHubs, filterBoo
     sorted = sorted.filter(function(item) { return !me.utils.isBookmarked(item[0]); });
   }
   if (filterHubs) {
-    sorted = sorted.filter(function(item) { return me.gc.isHub(item[0]); });
+  // TODO: use siteHub to filter this
+    //sorted = sorted.filter(function(item) { return me.gc.isHub(item[0]); });
   }
   return sorted;
 }
@@ -86,7 +86,7 @@ KoalaDashboard.prototype.clickHandler = function(e) {
   let filterBookmarks = params[3] == "ub" ? true : false;
   if (sort) {
     let sorted = me.getSortedBasic(sortBy, filterHubs, filterBookmarks);
-    Cu.reportError(JSON.stringify(sorted));
+    //Cu.reportError(JSON.stringify(sorted));
     me.populateResults(sort, sorted);
   }
 
@@ -111,14 +111,21 @@ KoalaSortedDisplayer = function(doc) {
   
 
   me.resElem = me.doc.getElementById("results");
-  me.resElem.innerHTML = "<ol id='sorted-list'></ol>";
-  me.list = me.doc.getElementById("sorted-list");
+  me.resElem.innerHTML = "<table id='result-table'></table>";
+  me.table = me.doc.getElementById("result-table");
 }
 
-KoalaSortedDisplayer.prototype.addRow = function(url, occ) {
+KoalaSortedDisplayer.prototype.addRow = function() {
   let me = this;
-  let li = me.doc.createElement("li");
-  li.innerHTML = url + " | " + occ;
-  let currentElems = me.list.getElementsByTagName("li");
-  me.list.insertBefore(li, currentElems[currentElems.length]);
+  let tr = me.doc.createElement("tr");
+  let arg = [];
+  for (let i = 0; i < arguments.length; i++) {
+    arg.push(arguments[i]);
+  }
+  tr.innerHTML = arg.map(function(e) {
+    return "<td>" + e + "</td>";
+  }).join('');
+  let currentElems = me.table.getElementsByTagName("tr");
+  me.table.insertBefore(tr, currentElems[currentElems.length]);
 };
+
