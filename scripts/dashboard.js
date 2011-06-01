@@ -48,17 +48,17 @@ KoalaDashboard.prototype.getSortedOccurences = function(sortBy, accum) {
   let stm = null;
   if (accum) {
     stm = Svc.History.DBConnection.createAsyncStatement(
-      "SELECT *, SUM(count) AS occurances FROM moz_koala " +
-      "WHERE type=:sortBy  GROUP BY place_id ORDER BY occurances DESC;");
+      "SELECT *, SUM(count) AS occurrences FROM moz_koala " +
+      "WHERE type=:sortBy  GROUP BY place_id ORDER BY occurrences DESC;");
   } else {
      stm = Svc.History.DBConnection.createAsyncStatement(
-      "SELECT *, COUNT(place_id) AS occurances FROM moz_koala " +
-      "WHERE type=:sortBy  GROUP BY place_id ORDER BY occurances DESC;");
+      "SELECT *, COUNT(place_id) AS occurrences FROM moz_koala " +
+      "WHERE type=:sortBy  GROUP BY place_id ORDER BY occurrences DESC;");
   }
 
   stm.params.sortBy = sortBy;
-  return Utils.queryAsync(stm, ["place_id", "url", "occurances"]).map(function(place) {
-    return [place["place_id"], place["occurances"]];
+  return Utils.queryAsync(stm, ["place_id", "url", "occurrences"]).map(function(place) {
+    return [place["place_id"], place["occurrences"]];
   });
 };
 
