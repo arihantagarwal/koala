@@ -45,8 +45,8 @@ KoalaUtils.prototype.getPlaceIdFromURL = function(url) {
 
 KoalaUtils.prototype.getDataQuery = function(query, params, select) {
   let stm = Svc.History.DBConnection.createAsyncStatement(query);
-  reportError(query);
-  reportError(JSON.stringify(params));
+  //reportError(query);
+  //reportError(JSON.stringify(params));
   for (let key in params) {
     stm.params[key] = params[key];
   }

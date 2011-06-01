@@ -59,8 +59,18 @@ KoalaDashboard.prototype.sortSubmit = function(e) {
 
   let filterHubs = me.doc.getElementById('sort-filter-hub').checked;
   let filterBookmarks = me.doc.getElementById('sort-filter-bm').checked;
-
+  let pCut = me.doc.getElementById("sort-cut").value ? parseFloat(me.doc.getElementById("sort-cut").value) : 0.3;
   let sorted = me.getSortedBasic(sortBy, filterHubs, filterBookmarks);
+  sorted = sorted.map(function(a) {
+    let pid = a[2];
+    let n = 10;
+    let prec = 'd';
+    let start = me.utils.getCurrentTime(prec);
+    let perm = me.utils.getProportionDays(pid, n, prec, start);
+    return [a[0],a[1],perm];
+  }).filter(function(a) {
+    return (a[2] > pCut);
+  });
   me.populateResults(true, sorted);
 }
 
@@ -116,7 +126,7 @@ KoalaDashboard.prototype.getSortedBasic = function(sortBy, filterHubs, filterBoo
     let uri = me.utils.getData(["url"],{"id": s[0]},"moz_places");
     uri = uri.length > 0 ? uri[0]["url"]: null;
     //reportError(uri);
-    return [uri, s[1]];
+    return [uri, s[1], s[0]];
   }).filter(function(s) {
     return s[0] != null;
   });
@@ -145,9 +155,9 @@ KoalaDashboard.prototype.populateResults = function(sort, sorted) {
   let me = this;
   if (sort) {
     let rdp = new KoalaSortedDisplayer(me.doc);
-    rdp.addRow("Place ID", "Occurrences");
+    rdp.addRow("Place ID", "Occurrences","Permanance");
     for (let i in sorted) {
-      rdp.addRow(sorted[i][0], sorted[i][1]);
+      rdp.addRow(sorted[i][0], sorted[i][1], sorted[i][2]);
     }
   }
 };
