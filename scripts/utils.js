@@ -21,6 +21,7 @@ KoalaUtils.prototype.getCurrentURL = function() {
 };
 
 KoalaUtils.prototype.isBookmarked = function(placeId) {
+  let me = this;
   return (me.getData(["id"],{"fk":placeId},"moz_bookmarks").length > 0);
 };
 

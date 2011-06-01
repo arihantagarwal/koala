@@ -20,7 +20,9 @@ GrandCentral.prototype.findHubFromPlace = function(placeId) {
 
 GrandCentral.prototype.isHub = function(placeId) {
   // TODO: make efficient, cant make so many queries
+  return true;
   let me = this;
   let hub = me.findHubFromPlace(placeId);
   return (hub == placeId);
+
 }

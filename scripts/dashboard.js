@@ -61,10 +61,10 @@ KoalaDashboard.prototype.getSortedBasic = function(sortBy, filterHubs, filterBoo
   let me = this;
   let sorted = me.getSortedOccurences(sortBy, (sortBy == 1 ? true : false)); // use accum for clicks
   if (filterBookmarks) {
-    sorted = sorted.map(function(item) { return !me.utils.isBookmarked(item[0]); });
+    sorted = sorted.filter(function(item) { return !me.utils.isBookmarked(item[0]); });
   }
   if (filterHubs) {
-    sorted = sorted.map(function(item) { return me.gc.isHub(item[0]); });
+    sorted = sorted.filter(function(item) { return me.gc.isHub(item[0]); });
   }
   return sorted;
 }
@@ -92,9 +92,8 @@ KoalaDashboard.prototype.populateResults = function(sort, sorted) {
   if (sort) {
     let rdp = new KoalaSortedDisplayer(me.doc);
     for (let i in sorted) {
-      let obj = me.utils.getData(["url"],{"id":sorted[i][0]}, "moz_places")[0];
       let occ = sorted[i][1];
-      rdp.addRow(obj["url"], occ);
+      rdp.addRow(sorted[i][0], occ);
     }
   }
 };
