@@ -24,17 +24,22 @@ KoalaDashboard.prototype.sortSubmit = function(e) {
   me.populateResults(true, sorted);
 }
 
+KoalaDashboard.prototype.uriLookup = function(e) {
+  let me = this;
+  Cu.reportError("uri lookup");
+  e.preventDefault();
+  let pid = parseInt(me.doc.getElementById('uri-from-pid').value);
+  let uri = me.utils.getData(["url"],{"id": pid},"moz_places");
+  uri = uri.length > 0 ? uri[0]["url"] : null;
+  Cu.reportError(uri);
+}
+
 KoalaDashboard.prototype.setupDashboard = function() {
   let me = this;
   me.sortWrap = function(e) { me.sortSubmit(e) }
+  me.uriLookupWrap = function(e) { me.uriLookup(e) }
   me.doc.getElementById('sorted-form').addEventListener("submit", me.sortWrap, false);
-  let clickable = me.doc.getElementsByTagName('li');
-
-  for (let i = 0; i < clickable.length; i++) {
-    clickable[i].addEventListener("click", function(e) {
-      me.clickHandler(e);
-    }, false);
-  };
+  me.doc.getElementById('uri-lookup-form').addEventListener("submit", me.uriLookupWrap, false);
 };
 
 KoalaDashboard.prototype.getSortedOccurences = function(sortBy, accum) {
