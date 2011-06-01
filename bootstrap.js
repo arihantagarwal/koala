@@ -49,8 +49,13 @@ function addMenuItem(win) {
     $(XUL_APP.baseKeyset).parentNode.appendChild(koalaKeyset).appendChild(koalaKey);
   };
 
+  function removeAll() {
+    removeMI();
+    koalaKeyset.parentNode.removeChild(koalaKeyset);
+  }
 
-  unload(removeMI, win);
+
+  unload(removeAll, win);
 }
 
 function dashboard() {
