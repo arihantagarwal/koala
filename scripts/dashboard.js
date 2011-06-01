@@ -31,7 +31,8 @@ KoalaDashboard.prototype.uriLookup = function(e) {
   let pid = parseInt(me.doc.getElementById('uri-from-pid').value);
   let uri = me.utils.getData(["url"],{"id": pid},"moz_places");
   uri = uri.length > 0 ? uri[0]["url"] : null;
-  Cu.reportError(uri);
+  let rdp = new KoalaSortedDisplayer(me.doc);
+  rdp.addRow(uri, 1);
 }
 
 KoalaDashboard.prototype.setupDashboard = function() {
