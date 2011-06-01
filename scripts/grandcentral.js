@@ -43,6 +43,6 @@ SiteCentral.prototype.getSiteHubList = function() {
   let revHost = me.utils.getData(["rev_host"], {"id":placeId}
     , "moz_places")[0]["rev_host"];
   return me.utils.getData(["id", "visit_count"],{"rev_host":revHost},"moz_places")
-    .map(function(d) {return [d["id", d["visit_count"]]})
+    .map(function(d) {return [d["id"], d["visit_count"]];})
     .sort(function(a,b) {return b[1] - a[1]});
 }

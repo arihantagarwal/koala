@@ -11,12 +11,15 @@ const NS_XUL = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 const keysetID = "koala-keyset";
 const keyID = "K:Koala";
 const fileMenuitemID = "menu_FileKoalaItem";
-var XUL_APP = {name: Services.appinfo.name};
+var XUL_APP = {
+  name: Services.appinfo.name,
+  baseKeyset: "mainKeyset"
+};
 
 
 function addMenuItem(win) {
   var $ = function(id) win.document.getElementById(id);
-
+  var xul = function(type) win.document.createElementNS(NS_XUL, type);
   function removeMI() {
     var menuitem = $(fileMenuitemID);
     menuitem && menuitem.parentNode.removeChild(menuitem);
@@ -34,6 +37,18 @@ function addMenuItem(win) {
 
     $("menu_FilePopup").insertBefore(koalaMI, $("menu_FileQuitItem"));
   }
+
+  let koalaKeyset = xul("keyset");
+  koalaKeyset.setAttribute("id", keysetID);
+  let (koalaKey = xul("key")) {
+    koalaKey.setAttribute("id", keyID);
+    koalaKey.setAttribute("key", "K");
+    koalaKey.setAttribute("modifiers", "accel,alt");
+    koalaKey.setAttribute("oncommand", "void(0);");
+    koalaKey.addEventListener("command", dashboard, true);
+    $(XUL_APP.baseKeyset).parentNode.appendChild(koalaKeyset).appendChild(koalaKey);
+  };
+
 
   unload(removeMI, win);
 }
@@ -183,25 +198,8 @@ function startup(data, reason) {
     });
     global.aboutURI = addon.getResourceURI("content/about.html");
   watchWindows(listenBrowser);
-  //watchWindows(main, XUL_APP.winType);
   });
 }
-
-function main(win) {
-  function $(id) doc.getElementById(id);
-  function xul(type) doc.createElementNS(NS_XUL, type);
-  let koalaKeyset = xul("keyset");
-  koalaKeyset.setAttribute("id", keysetID);
-  let (koalaKey = xul("key")) {
-    koalaKey.setAttribute("id", keyID);
-    koalaKey.setAttribute("key", "K");
-    koalaKey.setAttribute("modifiers", "accel,alt");
-    koalaKey.setAttribute("oncommand", "void(0);");
-    koalaKey.addEventListener("command", dashboard, true);
-    $(XUL_APP.baseKeyset).parentNode, appendChild(koalaKeyset).appendChild(koalaKey);
-  };
-
-};
 
 function shutdown(data, reason) {
   Cu.reportError("koala shutdown");
