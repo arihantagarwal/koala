@@ -45,6 +45,8 @@ KoalaUtils.prototype.getPlaceIdFromURL = function(url) {
 
 KoalaUtils.prototype.getDataQuery = function(query, params, select) {
   let stm = Svc.History.DBConnection.createAsyncStatement(query);
+  reportError(query);
+  reportError(JSON.stringify(params));
   for (let key in params) {
     stm.params[key] = params[key];
   }
@@ -148,3 +150,33 @@ KoalaUtils.prototype.createDB = function(table, schema) {
   //reportError("creating " + table);
   dbConn.createTable(table, schema);
 };
+
+/*
+ * input: placeId, n - the number of days to look over
+ * @return p - the proportion of the last n days the site was visited on
+ */
+KoalaUtils.prototype.getProportionDays = function(placeId, n, precisionChar, start) {
+  let me = this;
+  // start is corrected for precision
+  let precisionT = {
+    'h': 1,
+    'd': 24,
+    'w': 24 * 7,
+    'm': 24 * 7 * 30
+  }
+  let query = "SELECT COUNT(*) AS count FROM  (SELECT *, (time / :precision) as date," +
+    "COUNT(1) FROM moz_koala WHERE  place_id=:placeId "+
+    "AND (:today - date < :n) GROUP BY date)";
+  
+  let precision = precisionT[precisionChar];
+
+  let params = {
+    "today": start,
+    "n": n,
+    "placeId": placeId,
+    "precision": precision
+  };
+  
+  let count = me.getDataQuery(query, params, ["count"])[0]["count"]
+  return count / n;
+}

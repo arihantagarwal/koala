@@ -6,6 +6,46 @@ KoalaDashboard = function(doc) {
   me.setupDashboard();
 };
 
+KoalaDashboard.prototype.setupDashboard = function() {
+  let me = this;
+  me.sortWrap = function(e) { me.sortSubmit(e) }
+  me.uriLookupWrap = function(e) { me.uriLookup(e) }
+  me.siteCentralWrap = function(e) { me.siteCentral(e) }
+  me.activityWrap = function(e) { me.activityLookup(e) }
+
+  me.doc.getElementById('sorted-form').addEventListener("submit", me.sortWrap, false);
+  me.doc.getElementById('uri-lookup-form').addEventListener("submit", me.uriLookupWrap, false);
+  me.doc.getElementById('site-hub-form').addEventListener("submit", me.siteCentralWrap, false);
+  me.doc.getElementById('act-form').addEventListener("submit", me.activityWrap, false);
+};
+
+KoalaDashboard.prototype.activityLookup = function(e) {
+  let me = this;
+  e.preventDefault();
+  
+  let placeId = parseInt(me.doc.getElementById('act-place-id').value);
+
+
+  let precision = null;
+  if (me.doc.getElementById('act-hours').checked) {
+    precision = 'h';
+  } else if (me.doc.getElementById('act-days').checked) {
+    precision = 'd';
+  } else if (me.doc.getElementById('act-weeks').checked) {
+    precision = 'w';
+  } else if (me.doc.getElementById('act-months').checked)  {
+    precision = 'm';
+  } else {
+    precision = 'd';
+  }
+  reportError(precision);
+  let n = parseInt(me.doc.getElementById('act-n').value);
+  let start = me.doc.getElementById('act-start').value ? me.doc.getElementById('act-start').value : me.utils.getCurrentTime(precision);
+
+  Cu.reportError(me.utils.getProportionDays(placeId, n, precision, start));
+
+};
+
 KoalaDashboard.prototype.sortSubmit = function(e) {
   let me = this;
   e.preventDefault();
@@ -42,17 +82,6 @@ KoalaDashboard.prototype.siteCentral = function(e) {
   let placeId = parseInt(me.doc.getElementById('hub-place-id').value);
   me.populateResults(true, me.sc.getSiteHubList(placeId));
 }
-
-
-KoalaDashboard.prototype.setupDashboard = function() {
-  let me = this;
-  me.sortWrap = function(e) { me.sortSubmit(e) }
-  me.uriLookupWrap = function(e) { me.uriLookup(e) }
-  me.siteCentralWrap = function(e) { me.siteCentral(e) }
-  me.doc.getElementById('sorted-form').addEventListener("submit", me.sortWrap, false);
-  me.doc.getElementById('uri-lookup-form').addEventListener("submit", me.uriLookupWrap, false);
-  me.doc.getElementById('site-hub-form').addEventListener("submit", me.siteCentralWrap, false);
-};
 
 KoalaDashboard.prototype.getSortedOccurences = function(sortBy, accum) {
   let me = this;
