@@ -164,8 +164,8 @@ KoalaUtils.prototype.getProportionDays = function(placeId, n, precisionChar, sta
     'w': 24 * 7,
     'm': 24 * 7 * 30
   }
-  let query = "SELECT COUNT(*) AS count FROM  (SELECT *, (time / :precision) as date," +
-    "COUNT(1) FROM moz_koala WHERE  place_id=:placeId "+
+  let query = "SELECT COUNT(*) AS count FROM  (SELECT *, (time / :precision) as date " +
+    "FROM moz_koala WHERE  place_id=:placeId "+
     "AND (:today - date < :n) GROUP BY date)";
   
   let precision = precisionT[precisionChar];

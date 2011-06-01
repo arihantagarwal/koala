@@ -18,6 +18,7 @@ function Brainiac() {
 /* use bookmarks as training data */
 Brainiac.prototype.trainBookmarks = function() {
   reportError("training brainiac");
+  let bookmarkData = me.utils.getDataQuery("",{},[]);
 }
 
 Brainiac.prototype.classify = function(placeId) {

@@ -72,8 +72,8 @@ KoalaDashboard.prototype.uriLookup = function(e) {
   let uri = me.utils.getData(["url"],{"id": pid},"moz_places");
   uri = uri.length > 0 ? uri[0]["url"] : null;
   let rdp = new KoalaSortedDisplayer(me.doc);
-  rdp.addRow("URL", "One");
-  rdp.addRow(uri, 1);
+  rdp.addRow("URL");
+  rdp.addRow(uri);
 }
 
 KoalaDashboard.prototype.siteCentral = function(e) {
@@ -87,19 +87,17 @@ KoalaDashboard.prototype.getSortedOccurences = function(sortBy, accum) {
   let me = this;
   let stm = null;
   if (accum) {
-    stm = Svc.History.DBConnection.createAsyncStatement(
-      "SELECT *, SUM(count) AS occurrences FROM moz_koala " +
-      "WHERE type=:sortBy  GROUP BY place_id ORDER BY occurrences DESC;");
+    let query = "SELECT place_id, SUM(count) as activity FROM moz_koala WHERE type=2 GROUP BY url ORDER BY activity DESC LIMIT 100;";
+    return me.utils.getDataQuery(query, {}, ["place_id", "activity"]).map(function(d) {
+      return [d["place_id"],d["activity"]];
+    });
   } else {
-     stm = Svc.History.DBConnection.createAsyncStatement(
-      "SELECT *, COUNT(place_id) AS occurrences FROM moz_koala " +
-      "WHERE type=:sortBy  GROUP BY place_id ORDER BY occurrences DESC;");
-  }
+    let query = "SELECT place_id, SUM(count) as clicks FROM moz_koala WHERE type=1 GROUP BY url ORDER BY clicks DESC LIMIT 100;";
+    return me.utils.getDataQuery(query, {}, ["place_id", "clicks"]).map(function(d) {
+      return [d["place_id"],d["clicks"]];
+    });
 
-  stm.params.sortBy = sortBy;
-  return Utils.queryAsync(stm, ["place_id", "url", "occurrences"]).map(function(place) {
-    return [place["place_id"], place["occurrences"]];
-  });
+  }
 };
 
 KoalaDashboard.prototype.getSortedBasic = function(sortBy, filterHubs, filterBookmarks) {
