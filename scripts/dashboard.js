@@ -63,7 +63,6 @@ KoalaDashboard.prototype.getSortedOccurences = function(sortBy, accum) {
 };
 
 KoalaDashboard.prototype.getSortedBasic = function(sortBy, filterHubs, filterBookmarks) {
-  // TODO: click count not accounted for as of now
   let me = this;
   let sorted = me.getSortedOccurences(sortBy, (sortBy == 1 ? true : false)); // use accum for clicks
   if (filterBookmarks) {

@@ -20,6 +20,14 @@ KoalaUtils.prototype.getCurrentURL = function() {
   return this.getCurrentWindow().location.href;
 };
 
+KoalaUtils.prototype.getCurrentPlace = function() {
+  return me.getData(["id"],{"url":me.getCurrentURL()},"moz_places")[0]["id"];
+}
+
+KoalaUtils.prototype.getCurrentHID = function() {
+  // TODO: write this function
+}
+
 KoalaUtils.prototype.isBookmarked = function(placeId) {
   let me = this;
   return (me.getData(["id"],{"fk":placeId},"moz_bookmarks").length > 0);

@@ -1,28 +1,46 @@
-function  GrandCentral() {
+function SessionCentral() {
   let me = this;
   me.utils = new KoalaUtils();
-};
+}
 
-GrandCentral.prototype.findHubFromPlace = function(placeId) {
+SessionCentral.prototype.getSessionGraph = function(historyId, p, c) {
   let me = this;
-  // TODO: write this function
-  Cu.reportError(placeId);
-  //let revHost = me.utils.getData(["rev_host"],{"id":placeId},"moz_places")[0]["rev_host"];
+  let graph = new Graph();
   
-  /*
-  let stm = Svc.History.DBConnection.createAsyncStatement(
-    "SELECT id FROM moz_places where rev_host = :revHost ORDER BY visit_count DESC LIMIT 1");
-  stm.params.revHost = revHost;
-  return Utils.queryAsync(stm, ["id"])[0]["id"];
-  */
-  return 1376;
-};
+  (function recursiveSessionGraph(historyId, p, c) {
+    if (historyId && historyId > 0) {
+      if (p) {graph.addNode(p); graph.addEdge(p, placeId)}
+      if (c) {graph.addNode(c); graph.addEdge(placeId, c)}
+      let placeId = me.utils.getData(["place_id"], {"id":historyId}, "moz_historyvisits")[0]["place_id"];
+      graph.addNode(placeId);
+      me.utils.getData(["from_visit"],{"id":historyId},"moz_historyvisits")
+        .map(function(h) {return h["from_visit"];})
+        .forEach(function(hid){recursiveSessionGraph(hid, null, placeId)});
+      me.utils.getData(["id"],{"from_visit":historyId},"moz_historyvisits")
+        .map(function(h) {return h["id"];})
+        .forEach(function(hid){recursiveSessionGraph(hid, placeId, null)});
+    }
+    return;
+  })();
+  
+  return graph;
+}
 
-GrandCentral.prototype.isHub = function(placeId) {
-  // TODO: make efficient, cant make so many queries
-  return true;
+SessionCentral.prototype.getCurrentSessionGraph = function() {
+
+}
+
+
+
+function SiteCentral() {
   let me = this;
-  let hub = me.findHubFromPlace(placeId);
-  return (hub == placeId);
+  me.utils = new KoalaUtils();
+}
 
+SiteCentral.prototype.getSiteHubList = function(placeId) {
+  let revHost = me.utils.getData(["rev_host"], {"id":placeId}
+    , "moz_places")[0]["rev_host"];
+  return me.utils.getData(["id", "visit_count"],{"rev_host":revHost},"moz_places")
+    .map(function(d) {return [d["id", d["visit_count"]]})
+    .sort(function(a,b) {return b[1] - a[1]});
 }
