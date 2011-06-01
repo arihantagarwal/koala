@@ -40,9 +40,23 @@ function SiteCentral() {
 
 SiteCentral.prototype.getSiteHubList = function(placeId) {
   let me = this
-  let revHost = me.utils.getData(["rev_host"], {"id":placeId}
-    , "moz_places")[0]["rev_host"];
+  // Cu.reportError(placeId);
+  let items = me.utils.getData(["rev_host"], {"id":placeId}
+    , "moz_places")
+  let revHost = items.length > 0 ? items[0]["rev_host"] : null;
+  if (!revHost) {
+    return [];
+  }
   return me.utils.getData(["id", "visit_count"],{"rev_host":revHost},"moz_places")
     .map(function(d) {return [d["id"], d["visit_count"]];})
     .sort(function(a,b) {return b[1] - a[1]});
+}
+
+SiteCentral.prototype.isSiteHub = function(placeId) {
+  let me = this;
+  let hubList = me.getSiteHubList(placeId);
+  if (hubList.length == 0)
+    return false; // TODO: could this be done better?
+  let hub = hubList[0][0]; // first, then pid
+  return hub == placeId;
 }

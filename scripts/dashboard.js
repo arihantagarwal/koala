@@ -81,8 +81,18 @@ KoalaDashboard.prototype.getSortedBasic = function(sortBy, filterHubs, filterBoo
   }
   if (filterHubs) {
   // TODO: use siteHub to filter this
-    //sorted = sorted.filter(function(item) { return me.gc.isHub(item[0]); });
+    sorted = sorted.filter(function(item) { return me.sc.isSiteHub(item[0]); });
   }
+  
+  sorted = sorted.map(function(s) {
+    //Cu.reportError(JSON.stringify(s));
+    let uri = me.utils.getData(["url"],{"id": s[0]},"moz_places");
+    uri = uri.length > 0 ? uri[0]["url"]: null;
+    //Cu.reportError(uri);
+    return [uri, s[1]];
+  }).filter(function(s) {
+    return s[0] != null;
+  });
   return sorted;
 }
 

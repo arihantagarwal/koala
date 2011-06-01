@@ -69,11 +69,6 @@ KoalaUtils.prototype.getData = function(fields, conditions, table) {
   return ret;
 };
 
-KoalaUtils.prototype.getDataQuery(query, params) {
-  /* less safe version of getData that allows for raw SQL queries */
-  // TODO: write this function
-};
-
 KoalaUtils.prototype.updateData = function(id, data, table) {
   let queryString = "UPDATE " + table + " SET ";
   for ([k, v] in Iterator(data)) {
