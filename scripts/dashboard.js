@@ -9,7 +9,7 @@ KoalaDashboard = function(doc) {
 KoalaDashboard.prototype.sortSubmit = function(e) {
   let me = this;
   e.preventDefault();
-  //Cu.reportError("form submit");
+  //reportError("form submit");
   let sortBy = null;
   if (me.doc.getElementById("sort-clicks").checked) {
     sortBy = 1;
@@ -26,7 +26,7 @@ KoalaDashboard.prototype.sortSubmit = function(e) {
 
 KoalaDashboard.prototype.uriLookup = function(e) {
   let me = this;
-  //Cu.reportError("uri lookup");
+  //reportError("uri lookup");
   e.preventDefault();
   let pid = parseInt(me.doc.getElementById('uri-from-pid').value);
   let uri = me.utils.getData(["url"],{"id": pid},"moz_places");
@@ -85,10 +85,10 @@ KoalaDashboard.prototype.getSortedBasic = function(sortBy, filterHubs, filterBoo
   }
   
   sorted = sorted.map(function(s) {
-    //Cu.reportError(JSON.stringify(s));
+    //reportError(JSON.stringify(s));
     let uri = me.utils.getData(["url"],{"id": s[0]},"moz_places");
     uri = uri.length > 0 ? uri[0]["url"]: null;
-    //Cu.reportError(uri);
+    //reportError(uri);
     return [uri, s[1]];
   }).filter(function(s) {
     return s[0] != null;
@@ -108,7 +108,7 @@ KoalaDashboard.prototype.clickHandler = function(e) {
   let filterBookmarks = params[3] == "ub" ? true : false;
   if (sort) {
     let sorted = me.getSortedBasic(sortBy, filterHubs, filterBookmarks);
-    //Cu.reportError(JSON.stringify(sorted));
+    //reportError(JSON.stringify(sorted));
     me.populateResults(sort, sorted);
   }
 

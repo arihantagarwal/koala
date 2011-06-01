@@ -1,6 +1,6 @@
 KoalaUtils = function() {
   let me = this;
-  //Cu.reportError("koala utils init");
+  //reportError("koala utils init");
   Cu.import("resource://services-sync/util.js");
 };
 
@@ -52,20 +52,20 @@ KoalaUtils.prototype.getData = function(fields, conditions, table) {
     conditionArr.push(key + " = :" + key + "_v");
   }
   queryString += conditionArr.join(" AND ");
-  //Cu.reportError("query string constructed" + queryString);
+  //reportError("query string constructed" + queryString);
   let stm = Svc.History.DBConnection.createAsyncStatement(queryString);
-  //Cu.reportError("statement created, parametrizing with " + JSON.stringify(conditions));
+  //reportError("statement created, parametrizing with " + JSON.stringify(conditions));
   for ([k, v] in Iterator(conditions)) {
-    //Cu.reportError("adding condition + " + k + " : " + v);
+    //reportError("adding condition + " + k + " : " + v);
     stm.params[k + "_v"] = v;
   }
-  //Cu.reportError("params are" + JSON.stringify(stm.params));
+  //reportError("params are" + JSON.stringify(stm.params));
   let ret = [];
-  //Cu.reportError("executing statement");
+  //reportError("executing statement");
   Utils.queryAsync(stm, fields).forEach(function(row) {
     ret.push(row);
   });
-  //Cu.reportError("returing " + JSON.stringify(ret));
+  //reportError("returing " + JSON.stringify(ret));
   return ret;
 };
 
@@ -75,7 +75,7 @@ KoalaUtils.prototype.updateData = function(id, data, table) {
     queryString += k + " = :" + k + "_v ";
   }
   queryString += "WHERE id = :id";
-  //Cu.reportError(queryString);
+  //reportError(queryString);
   let stm = Svc.History.DBConnection.createAsyncStatement(queryString);
   stm.params["id"] = id;
   for ([k,v] in Iterator(data)) {
@@ -94,12 +94,12 @@ KoalaUtils.prototype.insertData = function(data, table) {
   queryString += ") VALUES ("
   queryString += flatData.map(function(d) {return ":" + d + "_v";}).join(',');
   queryString += ");";
-  //Cu.reportError(queryString);
+  //reportError(queryString);
   let stm = Svc.History.DBConnection.createAsyncStatement(queryString);
   for ([k,v] in Iterator(data)) {
     stm.params[k + "_v"] = v;
   }
-  //Cu.reportError(JSON.stringify(stm.params));
+  //reportError(JSON.stringify(stm.params));
   Utils.queryAsync(stm, []);
 };
 
@@ -133,6 +133,6 @@ KoalaUtils.prototype.createDB = function(table, schema) {
                 .getService(Ci.mozIStorageService);
   let dbConn = storage.openDatabase(dbFile);
   
-  //Cu.reportError("creating " + table);
+  //reportError("creating " + table);
   dbConn.createTable(table, schema);
 };

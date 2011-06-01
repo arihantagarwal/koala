@@ -10,7 +10,7 @@ function SmartMark() {
       try{
       me.handleSmartmark(aItemId);
       }
-      catch(ex){Cu.reportError(ex);}
+      catch(ex){reportError(ex);}
     },
 
     onItemChanged: function(){},
@@ -34,13 +34,13 @@ SmartMark.prototype.kill = function() {
 
 SmartMark.prototype.handleSmartmark = function(aItemId) {
   let me = this;
-  Cu.reportError("Handle Smartmark" + aItemId);
+  reportError("Handle Smartmark" + aItemId);
   let placeId = me.utils.getData(["fk"], {"id":aItemId}, "moz_bookmarks")[0]["fk"];
 
 
-  Cu.reportError("place ID is " + placeId);
+  reportError("place ID is " + placeId);
   let searchTags = me.utils.getSearchTags(placeId);
-  Cu.reportError(JSON.stringify(searchTags));
+  reportError(JSON.stringify(searchTags));
   let tagArray = [];
   for (let k in searchTags) {
     tagArray.push(k);

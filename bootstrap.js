@@ -2,6 +2,9 @@ const {classes: Cc, interfaces: Ci, manager: Cm, utils: Cu} = Components;
 const global = this;
 const KOALA_SCRIPTS = ["tracker", "utils", "tagger", "dashboard", "grandcentral", "migrator"];
 
+const DEBUG = false;
+const reportError = DEBUG ? reportError : function(err) {}
+
 Cu.import("resource://gre/modules/AddonManager.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
@@ -59,7 +62,7 @@ function addMenuItem(win) {
 }
 
 function dashboard() {
-  //Cu.reportError("load dashboard");
+  //reportError("load dashboard");
   let gBrowser = Services.wm.getMostRecentWindow("navigator:browser").gBrowser;
   
 
@@ -181,7 +184,7 @@ function unload(callback, container) {
 function listenBrowser(window) {
   try {addMenuItem(window);
   } catch (ex) {
-    Cu.reportError(ex);
+    reportError(ex);
   }
   
   let tracker = new KoalaTracker(window);
@@ -194,7 +197,7 @@ function listenBrowser(window) {
 
 function startup(data, reason) {
   global.APP_ID = data.id;
-  //Cu.reportError("Koala startup");
+  //reportError("Koala startup");
   AddonManager.getAddonByID(data.id, function(addon) {
     // Load various javascript includes for helper functions
     KOALA_SCRIPTS.forEach(function(fileName) {
@@ -207,16 +210,16 @@ function startup(data, reason) {
 }
 
 function shutdown(data, reason) {
-  //Cu.reportError("koala shutdown");
+  //reportError("koala shutdown");
   if (reason != APP_SHUTDOWN) {
     unload();
   }
 }
 
 function install(data, reason) {
-  //Cu.reportError("installing koala");
+  //reportError("installing koala");
 
-  //Cu.reportError("Koala startup");
+  //reportError("Koala startup");
   AddonManager.getAddonByID(data.id, function(addon) {
     KOALA_SCRIPTS.forEach(function(fileName) {
       let fileURI = addon.getResourceURI("scripts/" + fileName + ".js");
@@ -224,7 +227,7 @@ function install(data, reason) {
     });
     let utils = new KoalaUtils();
   
-  //Cu.reportError("creating tracker db");
+  //reportError("creating tracker db");
   (function createTrackerDB(){
     let trackerSchema = "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE," +
                       "url LONGVARCHAR," +
@@ -238,14 +241,14 @@ function install(data, reason) {
     try {
       let migrate = new KoalaMigrator();
     } catch (x) {
-      Cu.reportError(x);
+      reportError(x);
     }
   } 
-  catch (ex) {Cu.reportError(ex)}
+  catch (ex) {reportError(ex)}
   })();
 
   (function createTaggerDB() {
-    Cu.reportError("crating tagger db");
+    reportError("crating tagger db");
     let taggerSchema = "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                        "place_id INTEGER," +
                        "tag LONGVARCHAR," +
@@ -255,7 +258,7 @@ function install(data, reason) {
     try {
       utils.createDB("moz_koala_tags", taggerSchema);
     } catch (ex) {
-      Cu.reportError(ex)
+      reportError(ex)
     }
   })();
 

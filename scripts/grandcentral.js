@@ -40,7 +40,7 @@ function SiteCentral() {
 
 SiteCentral.prototype.getSiteHubList = function(placeId) {
   let me = this
-  // Cu.reportError(placeId);
+  // reportError(placeId);
   let items = me.utils.getData(["rev_host"], {"id":placeId}
     , "moz_places")
   let revHost = items.length > 0 ? items[0]["rev_host"] : null;

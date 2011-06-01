@@ -2,7 +2,7 @@
  * Utility to move data from FinderFox to Koala.
  */
 function KoalaMigrator() {
-  Cu.reportError("migrating");
+  reportError("migrating");
   let me = this;
   me.utils = new KoalaUtils();
   let query = "SELECT url,CASE WHEN (type>1) THEN 2 ELSE 1 END AS type, "+

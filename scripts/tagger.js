@@ -11,7 +11,7 @@
 
 KoalaTagger = function() {
   let me = this;
-  // Cu.reportError("starting koala tagger");
+  // reportError("starting koala tagger");
   me.utils = new KoalaUtils();
 }
 
