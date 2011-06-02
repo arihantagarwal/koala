@@ -54,7 +54,7 @@ KoalaUtils.prototype.getDataQuery = function(query, params, select) {
   Utils.queryAsync(stm, select).forEach(function(row) {
     result.push(row);
   });
-  //reportError(JSON.stringify(result));
+  reportError(JSON.stringify(result));
   return result;
 }
 
