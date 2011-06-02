@@ -87,8 +87,13 @@ KoalaDashboard.prototype.optionsSubmit = function(e) {
   
   let rdp = new KoalaSortedDisplayer(me.doc);
   rdp.addRow("Place ID", "Count");
-
-  data.map(function(d) {
+  
+  // TODO: these can be even faster if done in SQL in the original above.
+  data.filter(function(d) {
+    return hubFilter ? me.sc.isSiteHub(d["place_id"]) : true;
+  }).filter(function(d) {
+    return bmFilter ? !me.utils.isBookmarked(d["place_id"]) : true;
+  }).map(function(d) {
     let uri = me.utils.getData(["url"],{"id": d["place_id"]},"moz_places");
     uri = uri.length > 0 ? uri[0]["url"] : null;
     return [uri, d["occ"]];
