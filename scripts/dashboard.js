@@ -8,6 +8,12 @@ KoalaDashboard = function(doc) {
 
 KoalaDashboard.prototype.setupDashboard = function() {
   let me = this;
+  
+  me.optionsWrap = function(e) { me.optionsSubmit(e) }
+  me.doc.getElementById('options-form').addEventListener(
+    "submit", me.optionsWrap, false);
+
+  /*
   me.sortWrap = function(e) { me.sortSubmit(e) }
   me.uriLookupWrap = function(e) { me.uriLookup(e) }
   me.siteCentralWrap = function(e) { me.siteCentral(e) }
@@ -17,7 +23,82 @@ KoalaDashboard.prototype.setupDashboard = function() {
   me.doc.getElementById('uri-lookup-form').addEventListener("submit", me.uriLookupWrap, false);
   me.doc.getElementById('site-hub-form').addEventListener("submit", me.siteCentralWrap, false);
   me.doc.getElementById('act-form').addEventListener("submit", me.activityWrap, false);
+  */
 };
+
+KoalaDashboard.prototype.optionsSubmit = function(e) {
+  let me = this;
+  e.preventDefault();
+  function $(id) me.doc.getElementById(id)
+  
+  let sortBy = null;
+  if ($('sort-clicks').checked) {
+    sortBy = 'clicks';
+  } else if ($('sort-activity').checked) {
+    sortBy = 'activity';
+  } else if ($('sort-perm').checked) {
+    sortBy = 'perm';
+  }
+  
+  let hubFilter = $('sort-filter-hub').checked;
+  let bmFilter = $('sort-filter-bm').checked;
+
+  let clickCutoff = $('sort-cut-clicks').value ? $('sort-cut-clicks').value : 0.0;
+  let activityCutoff = $('sort-cut-act').value ? $('sort-cut-act').value : 0.0;
+  let permCutoff = $('sort-cut-perm').value ? $('sort-cut-perm').value : 0.0;
+
+  let startTime = parseInt($('start-time-hidden').value) / (1000 * 60 * 60);
+  let endTime = parseInt($('end-time-hidden').value) / (1000 * 60 * 60);
+  
+  let clickQ = "SELECT place_id, SUM(count) as occ FROM moz_koala " + 
+               "WHERE time <= :endTime AND time >= :startTime " + 
+               "AND type=1 GROUP BY place_id " +
+               "ORDER BY occ DESC;";
+  let clickP = {
+    "startTime": startTime,
+    "endTime"  : endTime
+  };
+
+  let activityQ = "SELECT place_id, SUM(count) as occ FROM moz_koala " + 
+                  "WHERE time <= :endTime AND time >= :startTime AND type=2 " + 
+                  "GROUP BY place_id ORDER BY occ DESC";
+  let activityP = clickP;
+
+  let frecencyQ = "SELECT id as place_id, frecency as occ " +
+                  "FROM moz_places ORDER BY occ DESC";
+  let frecencyP = {};
+
+  let permQ = "SELECT place_id, (time/24) as date, " + 
+              "(COUNT(1) / ((:endTime - :startTime)/(CAST(24 AS FLOAT)))) as occ " + 
+              "FROM moz_koala WHERE time >= :startTime AND time <= :endTime " + 
+              "AND type=2 GROUP BY place_id ORDER BY occ DESC";
+  let permP = clickP;
+  
+  let data = null;
+  if (sortBy == 'clicks') {
+    data = me.utils.getDataQuery(clickQ, clickP, ["place_id", "occ"]);
+  } else if (sortBy == 'activity') {
+    data = me.utils.getDataQuery(activityQ, activityP, ["place_id", "occ"]);
+  } else if (sortBy == 'perm') {
+    data = me.utils.getDataQuery(permQ, permP, ["place_id", "occ"]);
+  } else {
+    data = me.utils.getDataQuery(frecencyQ, frecencyP, ["place_id", "occ"]);
+  }
+  
+  let rdp = new KoalaSortedDisplayer(me.doc);
+  rdp.addRow("Place ID", "Count");
+
+  data.map(function(d) {
+    let uri = me.utils.getData(["url"],{"id": d["place_id"]},"moz_places");
+    uri = uri.length > 0 ? uri[0]["url"] : null;
+    return [uri, d["occ"]];
+  }).filter(function(a) {
+    return a[0] != null;
+  }).forEach(function(a) {
+    rdp.addRow(a[0], a[1]);
+  });
+
+}
 
 KoalaDashboard.prototype.activityLookup = function(e) {
   let me = this;
@@ -79,7 +160,7 @@ KoalaDashboard.prototype.uriLookup = function(e) {
   //reportError("uri lookup");
   e.preventDefault();
   let pid = parseInt(me.doc.getElementById('uri-from-pid').value);
-  let uri = me.utils.getData(["url"],{"id": pid},"moz_places");
+  let uri = me.utils.getdata(["url"],{"id": pid},"moz_places");
   uri = uri.length > 0 ? uri[0]["url"] : null;
   let rdp = new KoalaSortedDisplayer(me.doc);
   rdp.addRow("URL");
@@ -97,12 +178,12 @@ KoalaDashboard.prototype.getSortedOccurences = function(sortBy, accum) {
   let me = this;
   let stm = null;
   if (accum) {
-    let query = "SELECT place_id, SUM(count) as activity FROM moz_koala WHERE type=2 GROUP BY url ORDER BY activity DESC LIMIT 100;";
+    let query = "SELECT place_id, SUM(count) as activity FROM moz_koala WHERE type=2 GROUP BY place_id ORDER BY activity DESC LIMIT 100;";
     return me.utils.getDataQuery(query, {}, ["place_id", "activity"]).map(function(d) {
       return [d["place_id"],d["activity"]];
     });
   } else {
-    let query = "SELECT place_id, SUM(count) as clicks FROM moz_koala WHERE type=1 GROUP BY url ORDER BY clicks DESC LIMIT 100;";
+    let query = "SELECT place_id, SUM(count) as clicks FROM moz_koala WHERE type=1 GROUP BY place_id ORDER BY clicks DESC LIMIT 100;";
     return me.utils.getDataQuery(query, {}, ["place_id", "clicks"]).map(function(d) {
       return [d["place_id"],d["clicks"]];
     });

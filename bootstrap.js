@@ -230,7 +230,6 @@ function install(data, reason) {
   //reportError("creating tracker db");
   (function createTrackerDB(){
     let trackerSchema = "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE," +
-                      "url LONGVARCHAR," +
                       "place_id INTEGER," +
                       "type INTEGER," +
                       "count INTEGER DEFAULT 1," +
