@@ -1,6 +1,6 @@
 KoalaUtils = function() {
   let me = this;
-  //reportError("koala utils init");
+  reportError("koala utils init");
   Cu.import("resource://services-sync/util.js");
 };
 
@@ -54,6 +54,7 @@ KoalaUtils.prototype.getDataQuery = function(query, params, select) {
   Utils.queryAsync(stm, select).forEach(function(row) {
     result.push(row);
   });
+  //reportError(JSON.stringify(result));
   return result;
 }
 

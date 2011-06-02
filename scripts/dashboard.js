@@ -2,6 +2,7 @@ KoalaDashboard = function(doc) {
   let me = this;
   me.doc = doc;
   me.utils = new KoalaUtils();
+  me.brainiac = new Brainiac();
   me.sc = new SiteCentral();
   me.setupDashboard();
 };
@@ -84,9 +85,10 @@ KoalaDashboard.prototype.optionsSubmit = function(e) {
   } else {
     data = me.utils.getDataQuery(frecencyQ, frecencyP, ["place_id", "occ"]);
   }
+
   
   let rdp = new KoalaSortedDisplayer(me.doc);
-  rdp.addRow("Place ID", "Count");
+  rdp.addRow("Place ID", "Count", "Bookmark Conf");
   
   // TODO: these can be even faster if done in SQL in the original above.
   data.filter(function(d) {
@@ -96,11 +98,11 @@ KoalaDashboard.prototype.optionsSubmit = function(e) {
   }).map(function(d) {
     let uri = me.utils.getData(["url"],{"id": d["place_id"]},"moz_places");
     uri = uri.length > 0 ? uri[0]["url"] : null;
-    return [uri, d["occ"]];
+    return [uri, d["occ"], me.brainiac.classify(d["place_id"])];
   }).filter(function(a) {
     return a[0] != null;
   }).forEach(function(a) {
-    rdp.addRow(a[0], a[1]);
+    rdp.addRow(a[0].slice(0,50), a[1], a[2]);
   });
 
 }

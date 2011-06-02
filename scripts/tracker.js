@@ -2,7 +2,6 @@ KoalaTracker = function(win) {
   reportError("starting koala tracker");
   let me = this;
   me.utils = new KoalaUtils();
-  me.brainiac = new Brainiac();
   
   //reportError("creating tracker db");
 
